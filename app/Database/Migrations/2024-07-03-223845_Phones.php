@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Email extends Migration
+class Phones extends Migration
 {
     public function up()
     {
@@ -20,9 +20,9 @@ class Email extends Migration
                 'constraint' => 11,
                 'unsigned'   => true,
             ],
-            'email' => [
+            'phone' => [
                 'type'       => 'VARCHAR',
-                'constraint' => 255,
+                'constraint' => 40,
                 'null'       => false,
             ],
             'created_at' => [
@@ -38,11 +38,11 @@ class Email extends Migration
         $this->forge->addKey('id', true);
         $this->forge->addForeignKey('id_contact', 'contacts', 'id');
 
-        $this->forge->createTable('email', true, ['engine' => 'InnoDB']);
+        $this->forge->createTable('phones', true, ['engine' => 'InnoDB']);
     }
 
     public function down()
     {
-        $this->forge->dropTable('email', true);
+        $this->forge->dropTable('phone', true);
     }
 }
