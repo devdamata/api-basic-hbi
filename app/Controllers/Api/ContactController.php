@@ -24,24 +24,12 @@ class ContactController extends ResourceController
 
     public function create()
     {
-//        $data = $this->request->getJSON();
         try {
-            $data = [
-                'name' => $this->request->getVar('name'),
-                'description' => $this->request->getVar('description'),
-                'zip_code' => $this->request->getVar('zip_code'),
-                'country' => $this->request->getVar('country'),
-                'state' => $this->request->getVar('state'),
-                'street_address' => $this->request->getVar('street_address'),
-                'address_number' => $this->request->getVar('address_number'),
-                'city' => $this->request->getVar('city'),
-                'address_line' => $this->request->getVar('address_line'),
-                'neighborhood' => $this->request->getVar('neighborhood'),
-                'phone' => $this->request->getVar('phone'),
-                'email' => $this->request->getVar('email')
-            ];
+            $data = $this->request;
 
-            $response = $this->contactService->createContact($data);
+            $arrData = $this->contactService->mountArrayData($data);
+
+            $response = $this->contactService->createContactComplete($arrData);
 
             return $this->respondCreated($response);
 
@@ -49,4 +37,34 @@ class ContactController extends ResourceController
             return $this->fail($e->getMessage());
         }
     }
+
+    public function update($id = null)
+    {
+
+        try {
+            $data = $this->request;
+
+            $arrData = $this->contactService->mountArrayData($data);
+
+            $response = $this->contactService->updateContact($id, $arrData);
+
+            return $this->respond($response);
+
+        } catch (\Exception $e) {
+            return $this->fail($e->getMessage());
+        }
+    }
+
+    public function delete($id = null)
+    {
+        try {
+            $response = $this->contactService->deleteContact($id);
+            return $this->respondDeleted($response);
+
+        } catch (\Exception $e) {
+            return $this->fail($e->getMessage());
+        }
+    }
+
+
 }
