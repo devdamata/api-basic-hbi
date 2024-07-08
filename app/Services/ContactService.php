@@ -16,6 +16,7 @@ class ContactService
     protected $addressModel;
     protected $phoneModel;
     protected $emailModel;
+    protected $viaCepService;
 
     public function __construct()
     {
@@ -24,6 +25,7 @@ class ContactService
         $this->addressModel = new Address();
         $this->phoneModel = new Phone();
         $this->emailModel = new Email();
+        $this->viaCepService = new ViaCepService();
     }
 
     public function mountArrayData($data)
@@ -59,20 +61,32 @@ class ContactService
 
             $contactId = $this->contactModel->insertID();
 
+            if (empty($data['zip_code'])) {
+                $this->db->transRollback();
+                throw new DataException('Erro ao inserir dados, zip_code obrigatório!!!');
+            }
+
+            $zipCode = preg_replace("/[^0-9]/", "", $data['zip_code']);
+            $viaCep = strlen($zipCode) == 8 ? $this->viaCepService->requestZipCode($zipCode) : null;
 
             $addressData = [
                 'id_contact' => $contactId,
-                'zip_code' => $data['zip_code'],
+                'zip_code' => $zipCode,
                 'country' => $data['country'],
-                'state' => $data['state'],
-                'street_address' => $data['street_address'],
                 'address_number' => $data['address_number'],
-                'city' => $data['city'],
-                'address_line' => $data['address_line'],
-                'neighborhood' => $data['neighborhood']
+                'state' => $viaCep['uf']??null,
+                'street_address' => $viaCep['logradouro']??null,
+                'city' => $viaCep['localidade']??null,
+                'address_line' => $data['address_number'].', '.$viaCep['logradouro'].' - '.$viaCep['bairro']??null,
+                'neighborhood' => $viaCep['bairro']??null
             ];
-            $this->addressModel->insert($addressData);
 
+            $validate = $this->addressModel->insert($addressData);
+
+            if (!$validate){
+                $this->db->transRollback();
+                throw new DataException('Erro ao inserir dados, zip_code obrigatório!!!');
+            }
 
             $phoneData = [
                 'id_contact' => $contactId,
@@ -121,6 +135,9 @@ class ContactService
                 $this->contactModel->update($id, array_filter($contactData));
             }
 
+            $zipCode = null;
+            $viaCep = [];
+
             $addressData = [
                 'zip_code' => $data['zip_code'],
                 'country' => $data['country'],
@@ -132,10 +149,27 @@ class ContactService
                 'neighborhood' => $data['neighborhood']
             ];
 
+            if (!empty($data['zip_code'])) {
+                $zipCode = preg_replace("/[^0-9]/", "", $data['zip_code']);
+
+                $viaCep = strlen($zipCode) == 8 ? $this->viaCepService->requestZipCode($zipCode) : null;
+                $addressData = [
+                    'zip_code' => $zipCode,
+                    'country' => $data['country'],
+                    'state' => $viaCep['uf']??null,
+                    'street_address' => $viaCep['logradouro']??null,
+                    'address_number' => $data['address_number']??null,
+                    'city' => $viaCep['localidade']??null,
+
+                    'address_line' => $data['address_number'].', '.$viaCep['logradouro'].' - '.$viaCep['bairro']??null,
+
+                    'neighborhood' => $viaCep['bairro']??null
+                ];
+            }
+
             if (count(array_filter($addressData)) != 0) {
                 $this->addressModel->where('id_contact', $id)->set(array_filter($addressData))->update();
             }
-
 
             $phoneData = [
                 'phone' => $data['phone']
@@ -144,7 +178,6 @@ class ContactService
             if (count(array_filter($phoneData)) != 0) {
                 $this->phoneModel->where('id_contact', $id)->set(array_filter($phoneData))->update();
             }
-
 
             $emailData = [
                 'email' => $data['email']

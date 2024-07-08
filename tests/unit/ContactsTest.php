@@ -21,7 +21,7 @@ class ContactsTest extends CIUnitTestCase
             [
                 'name' => 'John Doe',
                 'description' => 'A test contact',
-                'zip_code' => '12345',
+                'zip_code' => '01001000',
                 'country' => 'Country',
                 'state' => 'State',
                 'street_address' => 'Street Address',
@@ -35,7 +35,7 @@ class ContactsTest extends CIUnitTestCase
             [
                 'name' => 'Jane Doe',
                 'description' => 'Another test contact',
-                'zip_code' => '08590510',
+                'zip_code' => '01001000',
                 'country' => 'Brasil',
                 'state' => 'São Paulo',
                 'street_address' => 'Rua Carlópolis',
@@ -79,7 +79,7 @@ class ContactsTest extends CIUnitTestCase
         $newContact = [
             'name' => 'Alice Smith',
             'description' => 'A new test contact',
-            'zip_code' => '56789',
+            'zip_code' => '01001000',
             'country' => 'CountryX',
             'state' => 'StateX',
             'street_address' => 'Another Street',
@@ -117,7 +117,7 @@ class ContactsTest extends CIUnitTestCase
         $updateData = [
             'name' => 'John Doe Updated',
             'description' => 'An updated test contact',
-            'zip_code' => '54321',
+            'zip_code' => '08590510',
             'country' => 'Updated Country',
             'state' => 'Updated State',
             'street_address' => 'Updated Street Address',
@@ -148,7 +148,7 @@ class ContactsTest extends CIUnitTestCase
         $this->assertNotNull($updatedContact);
         $this->assertEquals('John Doe Updated', $updatedContact['name']);
         $this->assertEquals('An updated test contact', $updatedContact['description']);
-        $this->assertEquals('54321', $updatedContact['zip_code']);
+        $this->assertEquals('08590510', $updatedContact['zip_code']);
         $this->assertEquals('Updated Country', $updatedContact['country']);
         $this->assertEquals('Updated State', $updatedContact['state']);
         $this->assertEquals('Updated Street Address', $updatedContact['street_address']);
