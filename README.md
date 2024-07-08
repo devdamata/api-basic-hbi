@@ -1,68 +1,129 @@
-# CodeIgniter 4 Application Starter
+# Api básica Contacts - Teste Prático HBI
 
-## What is CodeIgniter?
+Repositório focado em realizar o desafio de criar uma api completa com GET, POST, PUT e DELETE + enriquecimento de dados
+com integração ViaCep, objetivo é demonstrar conhecimentos técnicos e conhecimentos conceituais sobre diversos temas
+voltados a cultura back-end de desenvolvimento, como boas práticas, nível de segurança, velocidade de resposta entre outros.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+Na sequencia teremos um passo a passo para a configuração do projeto e posteriomente passar por testes e avaliações.
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## O que foi utilizado?
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+* [CodeIgniter 4](https://codeigniter.com/user_guide/intro/index.html)
+* [Postman](https://www.postman.com/)
+* [PHPUnit](https://phpunit.de/documentation.html)
+* [Download Collection de teste para postman (arquivo JSON)](https://drive.google.com/file/d/1HiwXzzYpfIQytFt1KhYzi1EJyW96MlQw/view)
+* [Link para collection diretamente do postman.com](https://www.postman.com/devdamata/workspace/api-bsica-hbi-teste-prtico/documentation/8035394-34721988-bf2e-450e-8108-5466444f66c8)
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+## Requisitos
 
-## Installation & updates
+PHP 8.1 ou superior
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+CodeIgniter 4
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+Composer version 2.4.4 ou superior
 
-## Setup
+Mysql version 8.0.31
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+---------------------------------------------
 
-## Important Change with index.php
+## Instalação
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+### Passo 1: Clone do repositório no GitHub
+```console
+> git clone https://github.com/devdamata/api-basic-hbi.git
+> cd api-basic-hbi
+```
+### Passo 2: Instalar as dependências
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+```console
+> composer install
+```
+### Passo 3: Configurar o arquivo Database.php
+app/Config/Database.php
 
-**Please** read the user guide for a better explanation of how CI4 works!
+```console
+//Configuração do banco de produção
+public array $default = [
+    'DSN'          => '',
+    'hostname'     => 'localhost',
+    'username'     => 'root',
+    'password'     => '',
+    'database'     => 'api-basic-hbi',
+    'DBDriver'     => 'MySQLi',
+    'DBPrefix'     => '',
+    'pConnect'     => false,
+    'DBDebug'      => true,
+    'charset'      => 'utf8mb4',
+    'DBCollat'     => 'utf8mb4_general_ci',
+    'swapPre'      => '',
+    'encrypt'      => false,
+    'compress'     => false,
+    'strictOn'     => false,
+    'failover'     => [],
+    'port'         => 3306,
+    'numberNative' => false,
+    'dateFormat'   => [
+        'date'     => 'Y-m-d',
+        'datetime' => 'Y-m-d H:i:s',
+        'time'     => 'H:i:s',
+    ],
+];
+```
+```console
+//Configuração do banco de teste
+public array $tests = [
+    'DSN'          => '',
+    'hostname'     => 'localhost',
+    'username'     => 'root',
+    'password'     => '',
+    'database'     => 'api-basic-hbi-tests',
+    'DBDriver'     => 'MySQLi',
+    'DBPrefix'     => '',
+    'pConnect'     => false,
+    'DBDebug'      => true,
+    'charset'      => 'utf8mb4',
+    'DBCollat'     => 'utf8mb4_general_ci',
+    'swapPre'      => '',
+    'encrypt'      => false,
+    'compress'     => false,
+    'strictOn'     => false,
+    'failover'     => [],
+    'port'         => 3306,
+    'numberNative' => false,
+    'dateFormat'   => [
+        'date'     => 'Y-m-d',
+        'datetime' => 'Y-m-d H:i:s',
+        'time'     => 'H:i:s',
+    ],
+];
+```
+Agora para criar as tabelas a partir do CodeIgniter 4 vamos precisar dos seguintes comandos:
+```console
+> php spark db:create api-basic-hbi
+> php spark db:create api-basic-hbi-tests
 
-## Repository Management
+> php spark migrate
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+### Passo 4: Subir o servidor embutido da aplicação
+```console
+> php spark serve
+```
+### Passo 5: Acessar a api
+```console
+> GET    - http://localhost:8080/api/contacts
+> POST   - http://localhost:8080/api/contacts
+> PUT    - http://localhost:8080/api/contacts{id}  
+> DELETE - http://localhost:8080/api/contacts/{id}
+```
+### Passo 6: Rodar testes PhpUnit
+```console
+> ./vendor/bin/phpunit
+```
+## Reforçando a documentação dos endpois
+Estou disponibilizando 2 maneiras de acesso a essa documentação, download + import do arquivo json da collection ou o 
+link da collection direto do postman.com
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+* [Download Collection de teste para postman (arquivo JSON)](https://drive.google.com/file/d/1HiwXzzYpfIQytFt1KhYzi1EJyW96MlQw/view)
+* [Link para collection diretamente do postman.com](https://www.postman.com/devdamata/workspace/api-bsica-hbi-teste-prtico/documentation/8035394-34721988-bf2e-450e-8108-5466444f66c8)
 
-## Server Requirements
-
-PHP version 8.1 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
