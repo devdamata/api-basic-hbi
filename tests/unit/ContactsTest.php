@@ -22,13 +22,13 @@ class ContactsTest extends CIUnitTestCase
                 'name' => 'John Doe',
                 'description' => 'A test contact',
                 'zip_code' => '01001-000',
-                'country' => 'Country',
-                'state' => 'State',
-                'street_address' => 'Street Address',
-                'address_number' => '123',
-                'city' => 'City',
-                'address_line' => 'Address Line',
-                'neighborhood' => 'Neighborhood',
+                'country' => 'CountryX',
+                'state' => 'StateX',
+                'street_address' => 'Another Street',
+                'address_number' => '456',
+                'city' => 'Another City',
+                'address_line' => 'Another Address Line',
+                'neighborhood' => 'Another Neighborhood',
                 'phone' => '(12) 93456-7890',
                 'email' => 'john@example.com'
             ],
@@ -36,13 +36,13 @@ class ContactsTest extends CIUnitTestCase
                 'name' => 'Jane Doe',
                 'description' => 'Another test contact',
                 'zip_code' => '01001-000',
-                'country' => 'Brasil',
-                'state' => 'São Paulo',
-                'street_address' => 'Rua Carlópolis',
-                'address_number' => '200',
-                'city' => 'Itaquaquecetuba',
-                'address_line' => 'Rua Carlópolis 200',
-                'neighborhood' => 'Ribeiro',
+                'country' => 'CountryX',
+                'state' => 'StateX',
+                'street_address' => 'Another Street',
+                'address_number' => '456',
+                'city' => 'Another City',
+                'address_line' => 'Another Address Line',
+                'neighborhood' => 'Another Neighborhood',
                 'phone' => '(11) 98765-4321',
                 'email' => 'jane@example.com'
             ]
@@ -54,9 +54,10 @@ class ContactsTest extends CIUnitTestCase
         $data = $this->mockData();
 
         foreach ($data as $contact) {
-            $result = $this->call('post', 'api/contacts', $contact);
+            $result = $this->call('POST', 'api/contacts', $contact);
             $result->assertStatus(201);
         }
+
     }
 
     public function testIndex()
@@ -64,7 +65,7 @@ class ContactsTest extends CIUnitTestCase
 
         $this->testMockDbTesting();
 
-        $result = $this->call('get', 'api/contacts');
+        $result = $this->call('GET', 'api/contacts');
 
         $responseArray = json_decode($result->getJSON(), true);
 
@@ -91,7 +92,7 @@ class ContactsTest extends CIUnitTestCase
             'email' => 'alice@example.com'
         ];
 
-        $result = $this->call('post', 'api/contacts', $newContact);
+        $result = $this->call('POST', 'api/contacts', $newContact);
 
         $result->assertStatus(201);
 
@@ -136,7 +137,7 @@ class ContactsTest extends CIUnitTestCase
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json'
             ])
-            ->call('put', 'api/contacts/1');
+            ->call('PUT', 'api/contacts/1');
 
         $result->assertStatus(200);
 
@@ -172,13 +173,13 @@ class ContactsTest extends CIUnitTestCase
         $existingContactJane = $contactModel->where('name', 'Jane Doe')->first();
         $this->assertNotNull($existingContactJane, 'O contato Jane Doe não foi encontrado no banco de dados.');
 
-        $result = $this->call('delete', 'api/contacts/' . $existingContactJohn['id']);
+        $result = $this->call('DELETE', 'api/contacts/' . $existingContactJohn['id']);
         $result->assertStatus(200);
 
         $deletedContactJohn = $contactModel->where('id', $existingContactJohn['id'])->first();
         $this->assertNull($deletedContactJohn, 'O contato John Doe não foi deletado do banco de dados.');
 
-        $result = $this->call('delete', 'api/contacts/' . $existingContactJane['id']);
+        $result = $this->call('DELETE', 'api/contacts/' . $existingContactJane['id']);
         $result->assertStatus(200);
 
         $deletedContactJane = $contactModel->where('id', $existingContactJane['id'])->first();

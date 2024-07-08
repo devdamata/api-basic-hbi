@@ -6,7 +6,8 @@ use CodeIgniter\Database\Migration;
 
 class AddNullableFieldsAddressesTable extends Migration
 {
-    public function up()
+    protected $DBGroup = 'tests';
+    public function up(): void
     {
         $this->forge->modifyColumn('addresses', [
             'id' => [

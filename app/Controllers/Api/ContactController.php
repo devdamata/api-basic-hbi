@@ -34,11 +34,15 @@ class ContactController extends ResourceController
 
     public function index()
     {
-        $result = $this->contactModel->join('phones', 'phones.id_contact = contacts.id')
-            ->join('emails', 'emails.id_contact = contacts.id')
-            ->join('addresses', 'addresses.id_contact = contacts.id')
-            ->findAll();
+        $result = $this->contactModel
+//            ->join('phones', 'phones.id_contact = contacts.id', 'left')
+            ->join('emails', 'emails.id_contact = contacts.id', 'left')->findAll();
+//            ->join('addresses', 'addresses.id_contact = contacts.id', 'left')
+
+
         return $this->respond($result);
+//
+//        return $this->respond($this->contactModel->findAll());
     }
 
     public function create()
@@ -48,7 +52,8 @@ class ContactController extends ResourceController
 
             $arrData = $this->contactService->mountArrayData($data);
 
-            $response = $this->contactService->createContactComplete($this->dataCleansingService->escapeArray($arrData));
+//            $response = $this->contactService->createContactComplete($this->dataCleansingService->escapeArray($arrData));
+            $response = $this->contactService->createContactComplete($arrData);
 
             if ($response['status'] == 400) {
                 return $this->fail($response['messages']);

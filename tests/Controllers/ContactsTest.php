@@ -15,7 +15,7 @@ class ContactsTest extends CIUnitTestCase
 
     public function testGetAllContacts()
     {
-        $result = $this->call('get', 'api/contacts');
+        $result = $this->call('GET', 'api/contacts');
         $result->assertStatus(200);
     }
 
@@ -26,17 +26,12 @@ class ContactsTest extends CIUnitTestCase
             'description' => 'A test contact',
             'zip_code' => '08590-510',
             'country' => 'Country',
-            'state' => 'State',
-            'street_address' => 'Street Address',
             'address_number' => '123',
-            'city' => 'City',
-            'address_line' => 'Address Line',
-            'neighborhood' => 'Neighborhood',
             'phone' => '(11) 92345-6789',
             'email' => 'john@example.com'
         ];
 
-        $result = $this->call('post', 'api/contacts', $data);
+        $result = $this->call('POST', 'api/contacts', $data);
         $result->assertStatus(201);
     }
 
@@ -66,7 +61,7 @@ class ContactsTest extends CIUnitTestCase
             'email' => 'john_updated@example.com'
         ];
 
-        $result = $this->call('put', "api/contacts/{$contactId}", $data);
+        $result = $this->call('PUT', "api/contacts/{$contactId}", $data);
         $result->assertStatus(200);
     }
 
@@ -81,7 +76,7 @@ class ContactsTest extends CIUnitTestCase
         ]);
         $contactId = $this->db->insertID();
 
-        $result = $this->call('delete', "api/contacts/{$contactId}");
+        $result = $this->call('DELETE', "api/contacts/{$contactId}");
         $result->assertStatus(200);
     }
 }
