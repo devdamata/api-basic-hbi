@@ -68,7 +68,7 @@ class ContactsTest extends CIUnitTestCase
         $result = $this->call('GET', 'api/contacts');
 
         $responseArray = json_decode($result->getJSON(), true);
-
+//        dd($responseArray);
         $this->assertCount(2, $responseArray);
         $this->assertEquals('John Doe', $responseArray[0]['name']);
         $this->assertEquals('Jane Doe', $responseArray[1]['name']);

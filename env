@@ -31,7 +31,7 @@
 #--------------------------------------------------------------------
 
 # database.default.hostname = localhost
-# database.default.database = ci4
+# database.default.database = api-basic-hbi
 # database.default.username = root
 # database.default.password =
 # database.default.DBDriver = MySQLi
@@ -40,7 +40,7 @@
 
 # If you use MySQLi as tests, first update the values of Config\Database::$tests.
 # database.tests.hostname = localhost
-# database.tests.database = ci4_test
+# database.tests.database = api-basic-hbi-tests
 # database.tests.username = root
 # database.tests.password =
 # database.tests.DBDriver = MySQLi

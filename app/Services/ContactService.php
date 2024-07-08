@@ -19,6 +19,7 @@ class ContactService
     protected $emailModel;
     protected $viaCepService;
     protected $validationRulesModelsService;
+    protected $dataCleansingService;
 
     public function __construct(
         Contact $contactModel,
@@ -35,6 +36,7 @@ class ContactService
         $this->emailModel = $emailModel;
         $this->viaCepService = $viaCepService;
         $this->validationRulesModelsService = $validationRulesModelsService;
+        $this->dataCleansingService = new DataCleansingService();
     }
 
     public function mountArrayData($data)
@@ -64,7 +66,7 @@ class ContactService
                 'description' => $data['description']
             ];
 
-            $validate = $this->contactModel->insert($contactData);
+            $validate = $this->contactModel->insert($this->dataCleansingService->escapeArray($contactData));
 
             $contactId = $this->contactModel->insertID();
 
@@ -96,7 +98,7 @@ class ContactService
             ];
 
 
-            $validate = $this->addressModel->insert($addressData);
+            $validate = $this->addressModel->insert($this->dataCleansingService->escapeArray($addressData));
 
             if (!$validate){
 
@@ -110,7 +112,7 @@ class ContactService
                 'phone' => $data['phone']
             ];
 
-            $validate = $this->phoneModel->insert($phoneData);
+            $validate = $this->phoneModel->insert($this->dataCleansingService->escapeArray($phoneData));
 
             if (!$validate){
 
@@ -125,7 +127,7 @@ class ContactService
                 'email' => $data['email']
             ];
 
-            $validate = $this->emailModel->insert($emailData);
+            $validate = $this->emailModel->insert($this->dataCleansingService->escapeArray($emailData));
 
             if (!$validate){
 
