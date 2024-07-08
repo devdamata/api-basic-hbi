@@ -9,6 +9,7 @@ use App\Models\Address;
 use CodeIgniter\Database\BaseConnection;
 use CodeIgniter\Database\Exceptions\DataException;
 
+
 class ContactService
 {
     protected $db;
@@ -17,33 +18,39 @@ class ContactService
     protected $phoneModel;
     protected $emailModel;
     protected $viaCepService;
+    protected $validationRulesModelsService;
 
-    public function __construct()
-    {
+    public function __construct(
+        Contact $contactModel,
+        Address $addressModel,
+        Phone $phoneModel,
+        Email $emailModel,
+        ViaCepService $viaCepService,
+        ValidationRulesModelsService $validationRulesModelsService
+    ){
         $this->db = \Config\Database::connect();
-        $this->contactModel = new Contact();
-        $this->addressModel = new Address();
-        $this->phoneModel = new Phone();
-        $this->emailModel = new Email();
-        $this->viaCepService = new ViaCepService();
+        $this->contactModel = $contactModel;
+        $this->addressModel = $addressModel;
+        $this->phoneModel = $phoneModel;
+        $this->emailModel = $emailModel;
+        $this->viaCepService = $viaCepService;
+        $this->validationRulesModelsService = $validationRulesModelsService;
     }
 
     public function mountArrayData($data)
     {
-        return [
-            'name' => $data->getVar('name')??$data->getPost('name')??null,
-            'description' => $data->getVar('description')??$data->getPost('description')??null,
-            'zip_code' => $data->getVar('zip_code')??$data->getPost('zip_code')??null,
-            'country' => $data->getVar('country')??$data->getPost('country')??null,
-            'state' => $data->getVar('state')??$data->getPost('state')??null,
-            'street_address' => $data->getVar('street_address')??$data->getPost('street_address')??null,
-            'address_number' => $data->getVar('address_number')??$data->getPost('address_number')??null,
-            'city' => $data->getVar('city')??$data->getPost('city')??null,
-            'address_line' => $data->getVar('address_line')??$data->getPost('address_line')??null,
-            'neighborhood' => $data->getVar('neighborhood')??$data->getPost('neighborhood')??null,
-            'phone' => $data->getVar('phone')??$data->getPost('phone')??null,
-            'email' => $data->getVar('email')??$data->getPost('email')??null
+        $fields = [
+            'name', 'description', 'zip_code', 'country', 'state',
+            'street_address', 'address_number', 'city', 'address_line',
+            'neighborhood', 'phone', 'email'
         ];
+
+        $result = [];
+        foreach ($fields as $field) {
+            $result[$field] = $data->getVar($field) ?? $data->getPost($field) ?? null;
+        }
+
+        return $result;
     }
 
     public function createContactComplete($data)
@@ -57,13 +64,20 @@ class ContactService
                 'description' => $data['description']
             ];
 
-            $this->contactModel->insert($contactData);
+            $validate = $this->contactModel->insert($contactData);
 
             $contactId = $this->contactModel->insertID();
 
+            if (!$validate){
+
+                $this->db->transRollback();
+
+                return $this->validationRulesModelsService->validate($this->contactModel);
+            }
+
             if (empty($data['zip_code'])) {
                 $this->db->transRollback();
-                throw new DataException('Erro ao inserir dados, zip_code obrigatório!!!');
+                return $this->validationRulesModelsService->validate($this->addressModel);
             }
 
             $zipCode = preg_replace("/[^0-9]/", "", $data['zip_code']);
@@ -73,33 +87,52 @@ class ContactService
                 'id_contact' => $contactId,
                 'zip_code' => $zipCode,
                 'country' => $data['country'],
-                'address_number' => $data['address_number'],
                 'state' => $viaCep['uf']??null,
                 'street_address' => $viaCep['logradouro']??null,
+                'address_number' => $data['address_number'],
                 'city' => $viaCep['localidade']??null,
                 'address_line' => $data['address_number'].', '.$viaCep['logradouro'].' - '.$viaCep['bairro']??null,
                 'neighborhood' => $viaCep['bairro']??null
             ];
 
+
             $validate = $this->addressModel->insert($addressData);
 
             if (!$validate){
+
                 $this->db->transRollback();
-                throw new DataException('Erro ao inserir dados, zip_code obrigatório!!!');
+
+                return $this->validationRulesModelsService->validate($this->addressModel);
             }
 
             $phoneData = [
                 'id_contact' => $contactId,
                 'phone' => $data['phone']
             ];
-            $this->phoneModel->insert($phoneData);
+
+            $validate = $this->phoneModel->insert($phoneData);
+
+            if (!$validate){
+
+                $this->db->transRollback();
+
+                return $this->validationRulesModelsService->validate($this->phoneModel);
+            }
 
 
             $emailData = [
                 'id_contact' => $contactId,
                 'email' => $data['email']
             ];
-            $this->emailModel->insert($emailData);
+
+            $validate = $this->emailModel->insert($emailData);
+
+            if (!$validate){
+
+                $this->db->transRollback();
+
+                return $this->validationRulesModelsService->validate($this->emailModel);
+            }
 
             $this->db->transComplete();
 
@@ -132,7 +165,14 @@ class ContactService
                 'description' => $data['description']
             ];
             if (count(array_filter($contactData)) != 0) {
-                $this->contactModel->update($id, array_filter($contactData));
+
+                $validate = $this->contactModel->update($id, array_filter($contactData));
+
+                if (!$validate){
+                    $this->db->transRollback();
+
+                    return $this->validationRulesModelsService->validate($this->contactModel);
+                }
             }
 
             $zipCode = null;
@@ -168,7 +208,20 @@ class ContactService
             }
 
             if (count(array_filter($addressData)) != 0) {
-                $this->addressModel->where('id_contact', $id)->set(array_filter($addressData))->update();
+
+                $validate = $this->addressModel->where('id_contact', $id)->set(array_filter($addressData))->update();
+
+                if (!$validate){
+                    $this->db->transRollback();
+
+                    return [
+                        'status' => 400,
+                        'error' => 400,
+                        'messages' => [
+                            'error' => $this->addressModel->errors()
+                        ]
+                    ];
+                }
             }
 
             $phoneData = [
@@ -176,7 +229,20 @@ class ContactService
             ];
 
             if (count(array_filter($phoneData)) != 0) {
-                $this->phoneModel->where('id_contact', $id)->set(array_filter($phoneData))->update();
+
+                $validate = $this->phoneModel->where('id_contact', $id)->set(array_filter($phoneData))->update();
+
+                if (!$validate){
+                    $this->db->transRollback();
+
+                    return [
+                        'status' => 400,
+                        'error' => 400,
+                        'messages' => [
+                            'error' => $this->phoneModel->errors()
+                        ]
+                    ];
+                }
             }
 
             $emailData = [
@@ -184,7 +250,20 @@ class ContactService
             ];
 
             if (count(array_filter($emailData)) != 0) {
-                $this->emailModel->where('id_contact', $id)->set(array_filter($emailData))->update();
+
+                $validate = $this->emailModel->where('id_contact', $id)->set(array_filter($emailData))->update();
+
+                if (!$validate){
+                    $this->db->transRollback();
+
+                    return [
+                        'status' => 400,
+                        'error' => 400,
+                        'messages' => [
+                            'error' => $this->emailModel->errors()
+                        ]
+                    ];
+                }
             }
 
             $this->db->transComplete();

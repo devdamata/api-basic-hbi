@@ -32,9 +32,15 @@ class Email extends Model
 
     // Validation
     protected $validationRules      = [
-        'email' => 'required'
+        'email' => 'required|valid_email|max_length[100]'
     ];
-    protected $validationMessages   = [];
+    protected $validationMessages   = [
+        'email' => [
+            'required' => 'O campo EMAIL é obrigatório.',
+            'valid_email' => 'EMAIL inválido. O formato correto é example@example.com.br.',
+            'max_length' => 'EMAIL tamanho máximo excedido'
+        ]
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 

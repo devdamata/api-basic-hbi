@@ -21,7 +21,7 @@ class ContactsTest extends CIUnitTestCase
             [
                 'name' => 'John Doe',
                 'description' => 'A test contact',
-                'zip_code' => '01001000',
+                'zip_code' => '01001-000',
                 'country' => 'Country',
                 'state' => 'State',
                 'street_address' => 'Street Address',
@@ -29,13 +29,13 @@ class ContactsTest extends CIUnitTestCase
                 'city' => 'City',
                 'address_line' => 'Address Line',
                 'neighborhood' => 'Neighborhood',
-                'phone' => '1234567890',
+                'phone' => '(12) 93456-7890',
                 'email' => 'john@example.com'
             ],
             [
                 'name' => 'Jane Doe',
                 'description' => 'Another test contact',
-                'zip_code' => '01001000',
+                'zip_code' => '01001-000',
                 'country' => 'Brasil',
                 'state' => 'São Paulo',
                 'street_address' => 'Rua Carlópolis',
@@ -43,7 +43,7 @@ class ContactsTest extends CIUnitTestCase
                 'city' => 'Itaquaquecetuba',
                 'address_line' => 'Rua Carlópolis 200',
                 'neighborhood' => 'Ribeiro',
-                'phone' => '+55 11 987654321',
+                'phone' => '(11) 98765-4321',
                 'email' => 'jane@example.com'
             ]
         ];
@@ -79,7 +79,7 @@ class ContactsTest extends CIUnitTestCase
         $newContact = [
             'name' => 'Alice Smith',
             'description' => 'A new test contact',
-            'zip_code' => '01001000',
+            'zip_code' => '01001-000',
             'country' => 'CountryX',
             'state' => 'StateX',
             'street_address' => 'Another Street',
@@ -87,7 +87,7 @@ class ContactsTest extends CIUnitTestCase
             'city' => 'Another City',
             'address_line' => 'Another Address Line',
             'neighborhood' => 'Another Neighborhood',
-            'phone' => '0987654321',
+            'phone' => '(98) 97654-3210',
             'email' => 'alice@example.com'
         ];
 
@@ -117,7 +117,7 @@ class ContactsTest extends CIUnitTestCase
         $updateData = [
             'name' => 'John Doe Updated',
             'description' => 'An updated test contact',
-            'zip_code' => '08590510',
+            'zip_code' => '08590-510',
             'country' => 'Updated Country',
             'state' => 'Updated State',
             'street_address' => 'Updated Street Address',
@@ -125,7 +125,7 @@ class ContactsTest extends CIUnitTestCase
             'city' => 'Updated City',
             'address_line' => 'Updated Address Line',
             'neighborhood' => 'Updated Neighborhood',
-            'phone' => '9876543210',
+            'phone' => '(98) 91765-3210',
             'email' => 'john_updated@example.com'
         ];
 
@@ -150,13 +150,13 @@ class ContactsTest extends CIUnitTestCase
         $this->assertEquals('An updated test contact', $updatedContact['description']);
         $this->assertEquals('08590510', $updatedContact['zip_code']);
         $this->assertEquals('Updated Country', $updatedContact['country']);
-        $this->assertEquals('Updated State', $updatedContact['state']);
-        $this->assertEquals('Updated Street Address', $updatedContact['street_address']);
+        $this->assertEquals('SP', $updatedContact['state']);
+        $this->assertEquals('Rua Carlópolis', $updatedContact['street_address']);
         $this->assertEquals('321', $updatedContact['address_number']);
-        $this->assertEquals('Updated City', $updatedContact['city']);
-        $this->assertEquals('Updated Address Line', $updatedContact['address_line']);
-        $this->assertEquals('Updated Neighborhood', $updatedContact['neighborhood']);
-        $this->assertEquals('9876543210', $updatedContact['phone']);
+        $this->assertEquals('Itaquaquecetuba', $updatedContact['city']);
+        $this->assertEquals('321, Rua Carlópolis - Ribeiro', $updatedContact['address_line']);
+        $this->assertEquals('Ribeiro', $updatedContact['neighborhood']);
+        $this->assertEquals('(98) 91765-3210', $updatedContact['phone']);
         $this->assertEquals('john_updated@example.com', $updatedContact['email']);
     }
 

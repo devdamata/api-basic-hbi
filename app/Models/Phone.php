@@ -32,9 +32,14 @@ class Phone extends Model
 
     // Validation
     protected $validationRules      = [
-        'phone' => 'required'
+        'phone' => 'required|regex_match[^\(\d{2}\)\s9\d{4}-\d{4}$]',
     ];
-    protected $validationMessages   = [];
+    protected $validationMessages   = [
+        'phone' => [
+            'required' => 'O campo PHONE é obrigatório.',
+            'regex_match' => 'PHONE inválido. O formato correto é (11) 98765-4321.'
+        ]
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 

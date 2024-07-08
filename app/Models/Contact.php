@@ -33,9 +33,18 @@ class Contact extends Model
     // Validation
     protected $validationRules      = [
         'name' => 'required|min_length[3]',
-        'description' => 'required'
+        'description' => 'required|max_length[255]',
     ];
-    protected $validationMessages   = [];
+    protected $validationMessages   = [
+        'name' => [
+            'required' => 'O campo NAME é obrigatório.',
+            'min_length' => 'O campo NAME teve o tamanho mínimo atingido, mínimo permitido são 3 caracteres.'
+        ],
+        'description' => [
+            'required' => 'O campo DESCRIPTION é obrigatório.',
+            'min_length' => 'O campo DESCRIPTION teve o tamanho máximo atingido, tamanho permitido 255 caracteres.'
+        ]
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
