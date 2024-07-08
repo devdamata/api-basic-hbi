@@ -34,7 +34,11 @@ class ContactController extends ResourceController
 
     public function index()
     {
-        return $this->respond($this->contactModel->findAll());
+        $result = $this->contactModel->join('phones', 'phones.id_contact = contacts.id')
+            ->join('emails', 'emails.id_contact = contacts.id')
+            ->join('addresses', 'addresses.id_contact = contacts.id')
+            ->findAll();
+        return $this->respond($result);
     }
 
     public function create()
