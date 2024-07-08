@@ -29,18 +29,18 @@ class ContactService
     public function mountArrayData($data)
     {
         return [
-            'name' => $data->getVar('name')??null,
-            'description' => $data->getVar('description')??null,
-            'zip_code' => $data->getVar('zip_code')??null,
-            'country' => $data->getVar('country')??null,
-            'state' => $data->getVar('state')??null,
-            'street_address' => $data->getVar('street_address')??null,
-            'address_number' => $data->getVar('address_number')??null,
-            'city' => $data->getVar('city')??null,
-            'address_line' => $data->getVar('address_line')??null,
-            'neighborhood' => $data->getVar('neighborhood')??null,
-            'phone' => $data->getVar('phone')??null,
-            'email' => $data->getVar('email')??null
+            'name' => $data->getVar('name')??$data->getPost('name')??null,
+            'description' => $data->getVar('description')??$data->getPost('description')??null,
+            'zip_code' => $data->getVar('zip_code')??$data->getPost('zip_code')??null,
+            'country' => $data->getVar('country')??$data->getPost('country')??null,
+            'state' => $data->getVar('state')??$data->getPost('state')??null,
+            'street_address' => $data->getVar('street_address')??$data->getPost('street_address')??null,
+            'address_number' => $data->getVar('address_number')??$data->getPost('address_number')??null,
+            'city' => $data->getVar('city')??$data->getPost('city')??null,
+            'address_line' => $data->getVar('address_line')??$data->getPost('address_line')??null,
+            'neighborhood' => $data->getVar('neighborhood')??$data->getPost('neighborhood')??null,
+            'phone' => $data->getVar('phone')??$data->getPost('phone')??null,
+            'email' => $data->getVar('email')??$data->getPost('email')??null
         ];
     }
 

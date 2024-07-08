@@ -19,7 +19,7 @@ class ContactController extends ResourceController
 
     public function index()
     {
-        return $this->response->setJSON($this->contactModel->findAll());
+        return $this->respond($this->contactModel->findAll());
     }
 
     public function create()
@@ -40,7 +40,6 @@ class ContactController extends ResourceController
 
     public function update($id = null)
     {
-
         try {
             $data = $this->request;
 
