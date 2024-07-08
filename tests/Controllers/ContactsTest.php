@@ -24,7 +24,7 @@ class ContactsTest extends CIUnitTestCase
         $data = [
             'name' => 'John Doe',
             'description' => 'A test contact',
-            'zip_code' => '08590510',
+            'zip_code' => '08590-510',
             'country' => 'Country',
             'state' => 'State',
             'street_address' => 'Street Address',
@@ -32,7 +32,7 @@ class ContactsTest extends CIUnitTestCase
             'city' => 'City',
             'address_line' => 'Address Line',
             'neighborhood' => 'Neighborhood',
-            'phone' => '1234567890',
+            'phone' => '(11) 92345-6789',
             'email' => 'john@example.com'
         ];
 
@@ -54,7 +54,7 @@ class ContactsTest extends CIUnitTestCase
         $data = [
             'name' => 'John Doe Updated',
             'description' => 'An updated test contact',
-            'zip_code' => '01001000',
+            'zip_code' => '01001-000',
             'country' => 'Updated Country',
             'state' => 'Updated State',
             'street_address' => 'Updated Street Address',
@@ -62,7 +62,7 @@ class ContactsTest extends CIUnitTestCase
             'city' => 'Updated City',
             'address_line' => 'Updated Address Line',
             'neighborhood' => 'Updated Neighborhood',
-            'phone' => '0987654321',
+            'phone' => '(11) 98765-4321',
             'email' => 'john_updated@example.com'
         ];
 
