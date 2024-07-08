@@ -39,9 +39,47 @@ class Address extends Model
 
     // Validation
     protected $validationRules      = [
-        'zip_code' => 'required'
+        'zip_code'          => 'required|regex_match[/^\d{5}\d{3}$/]',
+        'country'           => 'required|min_length[3]|max_length[50]',
+        'state'             => 'permit_empty|min_length[2]|max_length[50]',
+        'street_address'    => 'permit_empty|max_length[100]',
+        'address_number'    => 'required|max_length[10]',
+        'city'              => 'permit_empty|min_length[3]|max_length[50]',
+        'address_line'      => 'permit_empty|max_length[100]',
+        'neighborhood'      => 'permit_empty|max_length[50]',
     ];
-    protected $validationMessages   = [];
+    protected $validationMessages   = [
+        'zip_code' => [
+            'required' => 'O campo CEP é obrigatório.',
+            'regex_match' => 'CEP inválido. O formato correto é 12345-678.'
+        ],
+        'country' => [
+            'required' => 'O campo COUNTRY é obrigatório.',
+            'min_length' => 'O campo COUNTRY teve o seu tamanho mínimo excedido.',
+            'max_length' => 'O campo COUNTRY teve o seu tamanho máximo excedido.'
+        ],
+        'state' => [
+            'min_length' => 'O campo STATE teve o seu tamanho mínimo excedido.',
+            'max_length' => 'O campo STATE teve o seu tamanho máximo excedido.'
+        ],
+        'street_address' => [
+            'max_length' => 'O campo STREET ADDRESS teve o seu tamanho máximo excedido.'
+        ],
+        'address_number' => [
+            'required' => 'O campo ADDRESS NUMBER é obrigatório.',
+            'regex_match' => 'O campo ADDRESS NUMBER teve o seu tamanho máximo excedido.'
+        ],
+        'city' => [
+            'min_length' => 'O campo CITY teve o seu tamanho mínimo excedido.',
+            'max_length' => 'O campo CITY teve o seu tamanho máximo excedido.'
+        ],
+        'address_line' => [
+            'max_length' => 'O campo ADDRESS LINE teve o seu tamanho máximo excedido.'
+        ],
+        'neighborhood' => [
+            'max_length' => 'O campo NEIGHBORHOOD teve o seu tamanho máximo excedido.'
+        ],
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
