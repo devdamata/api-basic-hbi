@@ -24,7 +24,7 @@ class ContactsTest extends CIUnitTestCase
         $data = [
             'name' => 'John Doe',
             'description' => 'A test contact',
-            'zip_code' => '12345',
+            'zip_code' => '08590510',
             'country' => 'Country',
             'state' => 'State',
             'street_address' => 'Street Address',
@@ -54,7 +54,7 @@ class ContactsTest extends CIUnitTestCase
         $data = [
             'name' => 'John Doe Updated',
             'description' => 'An updated test contact',
-            'zip_code' => '54321',
+            'zip_code' => '01001000',
             'country' => 'Updated Country',
             'state' => 'Updated State',
             'street_address' => 'Updated Street Address',
