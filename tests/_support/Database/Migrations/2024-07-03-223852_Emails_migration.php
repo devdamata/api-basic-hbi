@@ -45,6 +45,6 @@ class Emails extends Migration
 
     public function down(): void
     {
-        $this->forge->dropTable('email', true);
+        $this->forge->dropTable('emails', true);
     }
 }

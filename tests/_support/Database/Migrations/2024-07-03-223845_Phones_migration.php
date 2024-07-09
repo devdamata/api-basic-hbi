@@ -45,6 +45,6 @@ class Phones extends Migration
 
     public function down(): void
     {
-        $this->forge->dropTable('phone', true);
+        $this->forge->dropTable('phones', true);
     }
 }
